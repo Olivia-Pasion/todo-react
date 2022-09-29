@@ -9,7 +9,7 @@ import { createListTodo, toggleComplete } from '../../services/todos';
 // hooks
 import { useTodos } from '../../hooks/useTodos';
 // context
-import { UserContext, useAuth } from '../../context/UserContext';
+import { UserContext } from '../../context/UserContext';
 
 
 
@@ -18,13 +18,18 @@ export default function Todos() {
   
   const { todos, setTodos } = useTodos();
 
-  const { currentUser, setCurrentUser } = useAuth();
+  const { user, setUser } = useContext(UserContext);
+  
   const handleSignOut = async () => {
-    await signOut();
-    setCurrentUser(null);
+    try {
+      await signOut();
+      setUser(null);
+    } catch (e) {
+    // eslint-disable-next-line no-console
+      console.error(e.message);
+    }
   };
 
-  const { user } = useContext(UserContext);
   if (!user) {
     return <Redirect to="/auth/sign-in" />;
   }
@@ -53,7 +58,7 @@ export default function Todos() {
 
   return (
     <div>
-      {currentUser && (
+      {user && (
         <>
           <Link to="/auth/sign-in" onClick={handleSignOut}>
             Sign Out
