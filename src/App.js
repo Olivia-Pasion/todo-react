@@ -13,7 +13,7 @@ function App() {
       <Switch>
         <Route path="/auth/:type" component={Auth} />
         <Route path="*">
-          <Redirect to="/auth/sign-in" />
+          <Redirect to="/auth/sign-up" />
         </Route>
       </Switch>
     </div>
