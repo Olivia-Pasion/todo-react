@@ -1,5 +1,5 @@
 // react
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { useState, useContext } from 'react';
 
 // services
@@ -9,7 +9,7 @@ import { createListTodo, toggleComplete } from '../../services/todos';
 // hooks
 import { useTodos } from '../../hooks/useTodos';
 // context
-import { UserContext } from '../../context/UserContext';
+import { UserContext, useAuth } from '../../context/UserContext';
 
 
 
@@ -17,6 +17,12 @@ export default function Todos() {
   const [description, setDescription] = useState('');
   
   const { todos, setTodos } = useTodos();
+
+  const { currentUser, setCurrentUser } = useAuth();
+  const handleSignOut = async () => {
+    await signOut();
+    setCurrentUser(null);
+  };
 
   const { user } = useContext(UserContext);
   if (!user) {
@@ -47,9 +53,33 @@ export default function Todos() {
 
   return (
     <div>
+      {currentUser && (
+        <>
+          <Link to="/auth/sign-in" onClick={handleSignOut}>
+            Sign Out
+          </Link>
+        </>
+      )}
       <h1>Todo List</h1>
-      <input placeholder='Create Todo'/>
-      <button>{submitTodo}</button>
+      <div>
+        <input 
+          type="text"
+          placeholder="create new todo"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <button onClick={handleNewTodo}>Add</button>
+        {todos.map((todo) => (
+          <div key={todo.id}>
+            <input 
+              type="checkbox"
+              checked={todo.completed}
+              onClick={() => handleClick(todo)}
+            />
+            {todo.description}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
