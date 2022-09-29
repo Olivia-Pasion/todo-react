@@ -1,5 +1,5 @@
 // React imports
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 // component imports
 import Auth from './components/Auth/Auth';
@@ -12,6 +12,9 @@ function App() {
     <div className="App">
       <Switch>
         <Route path="/auth/:type" component={Auth} />
+        <Route path="*">
+          <Redirect to="/auth/sign-in" />
+        </Route>
       </Switch>
     </div>
   );
